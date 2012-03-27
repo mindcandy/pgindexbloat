@@ -57,26 +57,26 @@ def main():
     usage = "usage: %prog [options] cvsA cvsB"
     parser = OptionParser(usage)
 
-    parser.add_option("-i", "--ignoremissing", dest="ignmissidxs", \
-            help="ignore missing indexes", \
+    parser.add_option("-i", "--ignoremissing", dest="ignmissidxs",
+            help="ignore missing indexes",
             action="store_false", default=True)
-    parser.add_option("-p", "--pretty-mode", dest="pretty", \
-            help="pretty mode", \
+    parser.add_option("-p", "--pretty-mode", dest="pretty",
+            help="pretty mode",
             action="store_true", default=False)
-    parser.add_option("-s", "--sum", dest="sum", \
-            help="print total bloat size at the end", \
+    parser.add_option("-s", "--sum", dest="sum",
+            help="print total bloat size at the end",
             action="store_true")
-    parser.add_option("-t", "--percent-threshold", dest="pctthrs", \
-            help="pct threshold when to treat idx as bloated; default 102", \
+    parser.add_option("-t", "--percent-threshold", dest="pctthrs",
+            help="pct threshold when to treat idx as bloated; default 102",
             action="store", default=102, metavar="number")
-    parser.add_option("-b", "--bytes-threshold", dest="bytesthrs", \
-            help="bytes threshold when to compare idx; default 100M", \
+    parser.add_option("-b", "--bytes-threshold", dest="bytesthrs",
+            help="bytes threshold when to compare idx; default 100M",
             action="store", default=100000000, metavar="bytes")
 
     (options, args) = parser.parse_args()
     if len(args) != 2:
-        parser.error("incorrect number of arguments; you must specify both \
-cvsA and cvsB file locations")
+        parser.error("incorrect number of arguments; you must specify both "
+                     "cvsA and cvsB file locations")
 
     # load data from CVS files
     cvsA = readCSV(args[0]) # production data
@@ -93,19 +93,20 @@ cvsA and cvsB file locations")
 
             if diff > options.pctthrs and long(size) > options.bytesthrs:
                 if options.pretty:
-                    print "Index %s size compare to clean import: %s %% (%s \
-vs. %s)" % (name, diff, convert_bytes(size), convert_bytes(cvsB[name]))
+                    print ("Index %s size compare to clean import: %s %% (%s"
+                           "vs. %s)" % (name, diff, convert_bytes(size),
+                                       convert_bytes(cvsB[name])))
                 else:
-                    print "index %s, %s %%, %s/%s" % (name, diff, \
-                            convert_bytes(size), convert_bytes(cvsB[name]))
+                    print ("index %s, %s %%, %s/%s" % (name, diff,
+                            convert_bytes(size), convert_bytes(cvsB[name])))
 
                 # total it up to the total idx bloat size
                 sum = sum + diff_bytes
         else:
             if options.ignmissidxs:
                 if options.pretty:
-                    print "Ough!  %s index is missing in the %s file.  \
-Likely a problem with backup!" % (name, args[1])
+                    print ("Ough!  %s index is missing in the %s file. "
+                           "Likely a problem with backup!" % (name, args[1]))
                 else:
                     print "index %s missing in %s file!" % (name, args[1])
 
