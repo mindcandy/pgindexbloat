@@ -69,7 +69,10 @@ def main():
     parser.add_option("-t", "--percent-threshold", dest="pctthrs",
             help="pct threshold when to treat idx as bloated; default 102",
             action="store", default=102, metavar="number")
-    parser.add_option("-b", "--bytes-threshold", dest="bytesthrs",
+    parser.add_option("-b", "--bloat-bytes", dest="bloatbytes",
+            help="minimal bloat size to display; default 0",
+            action="store", default=0, metavar="bytes")
+    parser.add_option("-c", "--size-threshold", dest="bytesthrs",
             help="bytes threshold when to compare idx; default 100M",
             action="store", default=100000000, metavar="bytes")
 
@@ -91,9 +94,10 @@ def main():
             # difference in bytes
             diff_bytes = long(size) - long(cvsB[name])
 
-            if diff > options.pctthrs and long(size) > options.bytesthrs:
+            if (diff > options.pctthrs and long(size) > options.bytesthrs and
+                    long(diff_bytes) > long(options.bloatbytes)):
                 if options.pretty:
-                    print ("Index %s size compare to clean import: %s %% (%s"
+                    print ("Index %s size compare to clean import: %s %% (%s "
                            "vs. %s)" % (name, diff, convert_bytes(size),
                                        convert_bytes(cvsB[name])))
                 else:
