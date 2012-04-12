@@ -16,7 +16,7 @@ database_name
 
 It has few options which may become handy:
 
-./indexbloat.py --help
+$ ./indexbloat.py --help
 Usage: indexbloat.py [options] cvsA cvsB
 
 Options:
@@ -27,12 +27,14 @@ Options:
   -t number, --percent-threshold=number
                         pct threshold when to treat idx as bloated; default
                         102
-  -b bytes, --bytes-threshold=bytes
+  -b bytes, --bloat-bytes=bytes
+                        minimal bloat size to display; default 0
+  -c bytes, --size-threshold=bytes
                         bytes threshold when to compare idx; default 100M
 
 Example output:
 
-./indexbloat.py -ps csva.csv csvb.csv 
+./indexbloat.py -ps csva.csv csvb.csv
 Index idx3 size compare to clean import: 117 % (14.49G vs. 12.35G)
 Index idx2 size compare to clean import: 279 % (14.49G vs. 5.18G)
 Ough!  idx4 index is missing in the csvb.csv file.  Likely a problem with backup!
