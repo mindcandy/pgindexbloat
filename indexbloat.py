@@ -96,7 +96,7 @@ def main():
 
             if (diff > options.pctthrs and long(size) > options.bytesthrs and
                     long(diff_bytes) > long(options.bloatbytes)):
-                indexes.append((name, diff, convert_bytes(size), convert_bytes(cvsB[name])))
+                indexes.append((name, diff, convert_bytes(size), convert_bytes(csvB[name])))
                 # total it up to the total idx bloat size
                 sum = sum + diff_bytes
         else:
