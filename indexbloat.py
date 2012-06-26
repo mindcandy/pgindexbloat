@@ -54,7 +54,7 @@ def convert_bytes(bytes):
 
 def main():
     # process options and arguments
-    usage = "usage: %prog [options] cvsA cvsB"
+    usage = "usage: %prog [options] csvA csvB"
     parser = OptionParser(usage)
 
     parser.add_option("-i", "--ignoremissing", dest="ignmissidxs",
@@ -79,31 +79,24 @@ def main():
     (options, args) = parser.parse_args()
     if len(args) != 2:
         parser.error("incorrect number of arguments; you must specify both "
-                     "cvsA and cvsB file locations")
+                     "csvA and csvB file locations")
 
-    # load data from CVS files
-    cvsA = readCSV(args[0]) # production data
-    cvsB = readCSV(args[1]) # clean import data
+    # load data from CSV files
+    csvA = readCSV(args[0]) # production data
+    csvB = readCSV(args[1]) # clean import data
 
     sum = 0 # we are going to use it to track total bloat size
-
-    for name, size in cvsA.iteritems():
-        if name in cvsB:
+    indexes = []
+    for name, size in csvA.iteritems():
+        if name in csvB:
             # difference in %
-            diff = long(size) * 100 / long(cvsB[name])
+            diff = long(size) * 100 / long(csvB[name])
             # difference in bytes
-            diff_bytes = long(size) - long(cvsB[name])
+            diff_bytes = long(size) - long(csvB[name])
 
             if (diff > options.pctthrs and long(size) > options.bytesthrs and
                     long(diff_bytes) > long(options.bloatbytes)):
-                if options.pretty:
-                    print ("Index %s size compare to clean import: %s %% (%s "
-                           "vs. %s)" % (name, diff, convert_bytes(size),
-                                       convert_bytes(cvsB[name])))
-                else:
-                    print ("index %s, %s %%, %s/%s" % (name, diff,
-                            convert_bytes(size), convert_bytes(cvsB[name])))
-
+                indexes.append((name, diff, convert_bytes(size), convert_bytes(csvB[name])))
                 # total it up to the total idx bloat size
                 sum = sum + diff_bytes
         else:
@@ -113,6 +106,14 @@ def main():
                            "Likely a problem with backup!" % (name, args[1]))
                 else:
                     print "index %s missing in %s file!" % (name, args[1])
+    
+    if options.pretty:
+        template = "Index %s size compare to clean import: %s %% (%s vs. %s)"
+    else:
+        template = "index %s, %s %%, %s/%s"
+
+    for indexdata in sorted(indexes, key=lambda x: x[1], reverse=True):
+        print template % indexdata
 
     # print total bloat size
     if options.sum:
